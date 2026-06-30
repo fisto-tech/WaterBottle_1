@@ -66,6 +66,23 @@ gsap.ticker.add((time) => {
 
 gsap.ticker.lagSmoothing(0);
 
+// Handle smooth scrolling for anchor links using Lenis
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const targetId = this.getAttribute('href');
+        
+        // Skip if it's just '#'
+        if (targetId === '#') return;
+        
+        const target = document.querySelector(targetId);
+        if (target) {
+            // offset -80 ensures the section isn't hidden behind the fixed navbar
+            lenis.scrollTo(target, { offset: -80 });
+        }
+    });
+});
+
 // Create a main timeline tied to ScrollTrigger to ensure all animations reverse together
 const tl = gsap.timeline({
     scrollTrigger: {
