@@ -579,14 +579,24 @@ if (icCards.length > 0) {
     gsap.from("#interactive-cards h2, #interactive-cards p, #interactive-cards .card", {
         scrollTrigger: {
             trigger: '#interactive-cards',
-            start: "top 75%",
+            start: "top 85%",
             toggleActions: "play reverse play reverse",
         },
         y: 50,
         opacity: 0,
-        duration: 0.8,
-        stagger: 0.05,
+        duration: 0.4,
+        stagger: 0.02,
         ease: "power3.out",
         clearProps: "transform,opacity" // <--- CRITICAL FIX: clear inline styles so CSS hover transform works
     });
 }
+
+// ==========================================
+// Collection Video Speed
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+    const collectionVideo = document.getElementById("collection-video");
+    if (collectionVideo) {
+        collectionVideo.playbackRate = 0.5;
+    }
+});
