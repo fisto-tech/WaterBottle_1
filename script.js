@@ -1,3 +1,9 @@
+// Force scroll to top on refresh
+if (history.scrollRestoration) {
+    history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
 // Removed liquid.js import
 
 gsap.registerPlugin(ScrollTrigger);
@@ -65,6 +71,26 @@ gsap.ticker.add((time) => {
 });
 
 gsap.ticker.lagSmoothing(0);
+
+// ==========================================
+// Go to Top Button Logic
+// ==========================================
+const goToTopBtn = document.getElementById('go-to-top');
+if (goToTopBtn) {
+    // Show/hide based on scroll position
+    lenis.on('scroll', (e) => {
+        if (e.scroll > 300) {
+            goToTopBtn.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+        } else {
+            goToTopBtn.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+        }
+    });
+
+    // Scroll to top on click
+    goToTopBtn.addEventListener('click', () => {
+        lenis.scrollTo(0, { duration: 1.5 });
+    });
+}
 
 // Handle smooth scrolling for anchor links using Lenis
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -205,26 +231,30 @@ heroSection.css({
 
 // Initialize Global Ripple Overlay (on top layer of Hero)
 let globalRipple = $('#global-ripple-overlay');
-globalRipple.ripples({
-    resolution: 500,
-    perturbance: 0.01,
-    interactive: false 
-});
-
-// Initialize Top-Layer Ripple Overlays for other sections
 let collTopRipple = $('#collection-top-ripple');
-collTopRipple.ripples({ resolution: 500, perturbance: 0.01, interactive: false });
-
 let galTopRipple = $('#gallery-top-ripple');
-galTopRipple.ripples({ resolution: 500, perturbance: 0.01, interactive: false });
-
 let banTopRipple = $('#banner-top-ripple');
-banTopRipple.ripples({ resolution: 500, perturbance: 0.01, interactive: false });
-
-$('#banner-ripple').ripples({ resolution: 500, perturbance: 0.04, interactive: true });
-
 let conTopRipple = $('#contact-top-ripple');
-conTopRipple.ripples({ resolution: 500, perturbance: 0.01, interactive: false });
+
+$(window).on('load', function() {
+    globalRipple.ripples({
+        resolution: 256,
+        perturbance: 0.01,
+        interactive: false 
+    });
+
+    // Initialize Top-Layer Ripple Overlays for other sections
+    collTopRipple.ripples({ resolution: 256, perturbance: 0.01, interactive: false });
+    galTopRipple.ripples({ resolution: 256, perturbance: 0.01, interactive: false });
+    banTopRipple.ripples({ resolution: 256, perturbance: 0.01, interactive: false });
+    conTopRipple.ripples({ resolution: 256, perturbance: 0.01, interactive: false });
+
+    // Initialize interactive ripples on main background elements of each section
+    $('main').ripples({ resolution: 256, perturbance: 0.04, interactive: true });
+    $('#collection').ripples({ resolution: 256, perturbance: 0.04, interactive: true });
+    $('#gallery-ripple').ripples({ resolution: 256, perturbance: 0.04, interactive: true });
+    $('#banner-ripple').ripples({ resolution: 256, perturbance: 0.04, interactive: true });
+});
 
 // Trigger ripples globally on mouse movement for all top overlays
 $(document).on('mousemove', function(e) {
