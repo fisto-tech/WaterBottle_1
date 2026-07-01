@@ -363,19 +363,29 @@ function updateSlider(index) {
     currentIndex = index;
     currentBottleIndex = 0;
 
-    // Crossfade the main hero section background
+    // Crossfade the main hero section background seamlessly
     const heroOverlay = $('<div class="absolute inset-0 w-full h-full bg-cover bg-center z-[0]" style="opacity:0;"></div>');
     heroOverlay.css('background-image', `url(${nextSlide.bgUrl})`);
     heroSection.prepend(heroOverlay);
     
     heroOverlay.animate({opacity: 1}, 600, function() {
         heroSection.css('background-image', `url(${nextSlide.bgUrl})`);
-        heroOverlay.remove();
+        try { heroSection.ripples('set', 'imageUrl', nextSlide.bgUrl); } catch(e) {}
+        
+        // Wait a tiny bit for the WebGL texture to load before removing the static overlay
+        setTimeout(() => {
+            heroOverlay.remove();
+        }, 250);
     });
 
-    // Update the global ripple overlay image without destroying the canvas!
-    // This preserves the current water ripples perfectly.
-    globalRipple.ripples('set', 'imageUrl', nextSlide.bgUrl);
+    // Smoothly transition the global ripple overlay
+    globalRipple.animate({opacity: 0}, 300, function() {
+        try { globalRipple.ripples('set', 'imageUrl', nextSlide.bgUrl); } catch(e) {}
+        
+        setTimeout(() => {
+            globalRipple.animate({opacity: 0.3}, 400);
+        }, 150);
+    });
 
     // Fade out text with a slight slide
     gsap.to([title1, title2, desc], {

@@ -246,3 +246,9 @@
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
+
+/* Fix WebGL Canvas edge gaps for ripples plugin */
+canvas:not(#paper-preloader) {
+  transform: scale(1.015);
+  transform-origin: center;
+}
