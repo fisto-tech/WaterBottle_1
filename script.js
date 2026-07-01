@@ -16,32 +16,48 @@ const mobileMenu = document.getElementById('mobile-menu');
 const hamburgerIcon = document.getElementById('hamburger-icon');
 const closeIcon = document.getElementById('close-icon');
 const mobileLinks = document.querySelectorAll('.mobile-link');
+const navbar = document.querySelector('nav');
 
 if (mobileMenuBtn && mobileMenu) {
     function toggleMobileMenu() {
         const isHidden = mobileMenu.classList.contains('hidden');
         if (isHidden) {
             mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
             // small delay to allow display:block to apply before opacity transition
             setTimeout(() => mobileMenu.classList.remove('opacity-0'), 10);
             hamburgerIcon.classList.add('hidden');
             closeIcon.classList.remove('hidden');
             document.body.style.overflow = 'hidden'; // Prevent background scrolling
+            
+            // Remove pill styling to blend with full-screen menu
+            navbar.classList.remove('bg-white/95', 'shadow-lg', 'border', 'backdrop-blur-md', 'border-gray-100');
         } else {
             mobileMenu.classList.add('opacity-0');
             setTimeout(() => {
                 mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
             }, 300); // match duration-300
             hamburgerIcon.classList.remove('hidden');
             closeIcon.classList.add('hidden');
             document.body.style.overflow = '';
+            
+            // Restore pill styling
+            navbar.classList.add('bg-white/95', 'shadow-lg', 'border', 'backdrop-blur-md', 'border-gray-100');
         }
     }
 
     mobileMenuBtn.addEventListener('click', toggleMobileMenu);
 
-    // Close menu when a link is clicked
+    // Close menu when a link inside mobile menu is clicked
     mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            if (!mobileMenu.classList.contains('hidden')) toggleMobileMenu();
+        });
+    });
+
+    // Close menu when a link inside navbar (like logo or order now button) is clicked
+    document.querySelectorAll('nav a').forEach(link => {
         link.addEventListener('click', () => {
             if (!mobileMenu.classList.contains('hidden')) toggleMobileMenu();
         });
@@ -119,7 +135,7 @@ const tl = gsap.timeline({
 });
 
 // 1. Navbar items (Slide down from top)
-tl.from('nav h1, nav > div.hidden > a, nav button', {
+tl.from('nav > a, nav > div > a, nav > div > button', {
     y: -20,
     opacity: 0,
     duration: 0.6,
