@@ -379,20 +379,14 @@ function updateSlider(index) {
     currentIndex = index;
     currentBottleIndex = 0;
 
-    // Crossfade the main hero section background seamlessly
-    const heroOverlay = $('<div class="absolute inset-0 w-full h-full bg-cover bg-center z-[0]" style="opacity:0;"></div>');
-    heroOverlay.css('background-image', `url(${nextSlide.bgUrl})`);
-    heroSection.prepend(heroOverlay);
-    
-    heroOverlay.animate({opacity: 1}, 600, function() {
+    // Preload the new background image to prevent a black flash, then instantly swap
+    // This ensures the water ripples effect NEVER freezes or looks "stuck" during transition
+    const img = new Image();
+    img.onload = () => {
         heroSection.css('background-image', `url(${nextSlide.bgUrl})`);
         try { heroSection.ripples('set', 'imageUrl', nextSlide.bgUrl); } catch(e) {}
-        
-        // Wait a tiny bit for the WebGL texture to load before removing the static overlay
-        setTimeout(() => {
-            heroOverlay.remove();
-        }, 250);
-    });
+    };
+    img.src = nextSlide.bgUrl;
 
     // Smoothly transition the global ripple overlay
     globalRipple.animate({opacity: 0}, 300, function() {
